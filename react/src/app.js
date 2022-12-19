@@ -1,17 +1,6 @@
 
-function createDOM(node){
-    if(typeof node == 'string'){
-        return document.createTextNode(node);
-    }
-    const el = document.createElement(node.tag);
 
-    node.children
-        .map(createDOM)
-        .forEach(el.appendChild.bind(el));
-    
-    return el;
-}
-
+import {createDOM, render} from './react';
 
 const vdom ={
     tag: 'p',
@@ -30,17 +19,23 @@ const vdom ={
             children: [
                 {
                     tag: 'li',
-                    props: {},
+                    props: {
+                        style: "color: red",
+                    },
                     children: ['첫 번째']
                 },
                 {
                     tag: 'li',
-                    props: {},
+                    props: {
+                        style: "color: blue",
+                    },
                     children: ['두 번째']
                 },
                 {
                     tag: 'li',
-                    props: {},
+                    props: {
+                        style: "color: green",
+                    },
                     children: ['세 번째']
                 },
             ]
@@ -48,9 +43,8 @@ const vdom ={
     ]
 }
 
-document
-    .querySelector('#root')
-    .appendChild(createDOM(vdom));
+render(vdom, document.querySelector('#root'));
+
 
 
 
