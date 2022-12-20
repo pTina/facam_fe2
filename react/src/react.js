@@ -18,6 +18,8 @@ export function createDOM(node){
 
 // ...children : 가변인자로 받음(배열로 들어가게 됨)
 export function createElement(tag, props, ...children){
+    props = props || {};
+
     return { tag, props, children };
 }
 
