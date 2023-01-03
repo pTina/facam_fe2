@@ -56,26 +56,3 @@ export function createElement(tag, props, ...children){
 export function render(vdom, container){
     container.appendChild(createDOM(vdom));
 }
-
-
-export const render = (function(){
-    // 기존 것을 클로저에 넣어둠
-    // 내부에서만 비교하려고
-    let prevDom = null;
-
-
-    return function(vdom, container){
-        // vdom: real DOM에 적용할 객체
-        if(prevDom === null){
-            prevDom = vdom;
-        }
-
-        // 기존게 있다면?
-        // diff
-        // 여기서 prevDom과 vdom의 객체 수준에서의 배교 수행 => 변경 사항만 업데이트된 새로운 객체를 만드는..
-        // createDOM이 아닌 updateDOM 함수 만들어서 처리하면 됨
-
-
-        container.appendChild(createDOM(vdom));
-    }
-})
