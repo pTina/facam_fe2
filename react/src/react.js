@@ -1,3 +1,6 @@
+const hooks = [];
+let currentComponent = 0;
+
 export class Component{
     constructor(props){
         this.props = props;
@@ -27,6 +30,19 @@ function makeProps(props, children){
     };
 }
 
+function useState(initValue){
+    let position  = currentComponent-1;
+    if(!hooks[position]){
+        hooks[position] = initValue;
+    }
+
+    const modifier = nextValue => {
+        hooks[position] = nextValue;
+    }
+
+    return[hooks[position], modifier];
+}
+
 // ...children : 가변인자로 받음(배열로 들어가게 됨)
 export function createElement(tag, props, ...children){
     props = props || {};
@@ -37,20 +53,21 @@ export function createElement(tag, props, ...children){
             const instance = new tag(makeProps(props, children));
             return instance.render();
 
-        }else{
-            if(children.length > 0){
-                return tag(makeProps(props, children));
-
-            }else{
-                return tag(props);
-            }
         }
 
-        
-        
-    }else{
-        return { tag, props, children };
+        hooks[currentComponent] = null;
+        currentComponent++;
+
+        if(children.length > 0){
+            return tag(makeProps(props, children));
+
+        }else{
+            return tag(props);
+        }
+
     }
+
+    return { tag, props, children };
 }
 
 export function render(vdom, container){
@@ -58,24 +75,24 @@ export function render(vdom, container){
 }
 
 
-export const render = (function(){
-    // 기존 것을 클로저에 넣어둠
-    // 내부에서만 비교하려고
-    let prevDom = null;
+// export const render = (function(){
+//     // 기존 것을 클로저에 넣어둠
+//     // 내부에서만 비교하려고
+//     let prevDom = null;
 
 
-    return function(vdom, container){
-        // vdom: real DOM에 적용할 객체
-        if(prevDom === null){
-            prevDom = vdom;
-        }
+//     return function(vdom, container){
+//         // vdom: real DOM에 적용할 객체
+//         if(prevDom === null){
+//             prevDom = vdom;
+//         }
 
-        // 기존게 있다면?
-        // diff
-        // 여기서 prevDom과 vdom의 객체 수준에서의 배교 수행 => 변경 사항만 업데이트된 새로운 객체를 만드는..
-        // createDOM이 아닌 updateDOM 함수 만들어서 처리하면 됨
+//         // 기존게 있다면?
+//         // diff
+//         // 여기서 prevDom과 vdom의 객체 수준에서의 배교 수행 => 변경 사항만 업데이트된 새로운 객체를 만드는..
+//         // createDOM이 아닌 updateDOM 함수 만들어서 처리하면 됨
 
 
-        container.appendChild(createDOM(vdom));
-    }
-})
+//         container.appendChild(createDOM(vdom));
+//     }
+// })
